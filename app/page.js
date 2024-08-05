@@ -20,7 +20,7 @@ export default function Home() {
 
   const applyFilter = (item) => {
     return item.toLowerCase().includes(filter.toLowerCase());
-  }
+  };
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, 'inventory'));
@@ -37,21 +37,18 @@ export default function Home() {
   const addItem = async (item) => {
     const docRef = doc(collection(firestore, 'inventory'), item);
     const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
       const { quantity } = docSnap.data();
       await setDoc(docRef, { quantity: quantity + 1 });
     } else {
       await setDoc(docRef, { quantity: 1 });
     }
-
     await updateInventory();
   };
 
   const removeItem = async (item) => {
     const docRef = doc(collection(firestore, 'inventory'), item);
     const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
       const { quantity } = docSnap.data();
       if (quantity === 1) {
@@ -60,7 +57,6 @@ export default function Home() {
         await setDoc(docRef, { quantity: quantity - 1 });
       }
     }
-
     await updateInventory();
   };
 
@@ -93,16 +89,16 @@ export default function Home() {
         <Button sx={{ width: "355px", height: "76px", bgcolor: "#91B38E", alignItems: "center", borderRadius: 2, boxShadow: 6, color: "white"}} onClick={() => { handleOpen() }}>
           Add Item
         </Button>
-        <Box width="355px" height="641px" display="flex" bgcolor="#91B38E" justifyContent="center" sx={{direction: "column", borderRadius: 2, boxShadow: 6}} padding={2}>
+        <Box width="355px" height="641px" display="flex" flexDirection="column" bgcolor="#91B38E" sx={{ justifyContent: "center", borderRadius: 2, boxShadow: 6 }} padding={2}>
           <TextField label="Filter Items" value={filter} onChange={handleFilterChange} fullWidth sx={{ width: 304, height: 57, bgcolor: "white", borderRadius: 2, boxShadow: 6}}/>
-          <Box width="304px" height="57px" display="flex" justifyContent="space-between" alignItems="center" bgcolor="#C5DCC2" borderRadius={2} boxShadow={6} padding={2}>
+          <Stack spacing={2} width="100%" padding={2}>
             {
-              inventory.filter(( {name} ) => {
+              inventory.filter(({ name }) => {
                 return filter.toLowerCase() === "" ? name : name.toLowerCase().includes(filter.toLowerCase());
               })
               .map(({ name, quantity }) => {
                 return (
-                  <Box key={name} width="304px" height="57px" display="flex" justifyContent="space-between" alignItems="center" bgcolor="#C5DCC2" borderRadius={2} boxShadow={6} padding={2} sx={{direction: "column"}}>
+                  <Box key={name} width="304px" height="57px" display="flex" justifyContent="space-between" alignItems="center" bgcolor="#C5DCC2" borderRadius={2} boxShadow={6} padding={2}>
                     <Typography variant="h3" color="#white" sx={{alignItems: "center"}} fontSize="20px">
                       {name.charAt(0).toUpperCase() + name.slice(1)}
                     </Typography>
@@ -111,10 +107,9 @@ export default function Home() {
                     </Typography>
                   </Box>
                 );
-            
               })
             }
-          </Box>
+          </Stack>
         </Box>
       </Stack>
       <Box width="1362px" height="744px" bgcolor="#91B38E" sx={{ borderRadius: 2, boxShadow: 6, display: "flex", justifyContent: "center", alignItems: "center" }}>
